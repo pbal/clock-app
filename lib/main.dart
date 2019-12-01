@@ -1,4 +1,3 @@
-import 'package:clock/views/clock_view.dart';
 import 'package:clock/views/preset_view.dart';
 import 'package:flutter/material.dart';
 
@@ -8,7 +7,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'My Clock',
+      title: 'Chess Clock',
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
         scaffoldBackgroundColor: Color(0xFF2b2b2b),
@@ -26,8 +25,6 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       home: PresetView(title: 'Animated Chess Clock'),
-      // home: MyHomePage(),
-      // home: ClockView(),
     );
   }
 }
