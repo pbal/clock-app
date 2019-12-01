@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
-import 'dart:math';
+import 'package:screen/screen.dart';
 
 class ClockView extends StatefulWidget {
   ClockView({
@@ -260,6 +260,7 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    Screen.keepOn(true);
     SystemChrome.setEnabledSystemUIOverlays([]);
     return Scaffold(
       body: Center(
