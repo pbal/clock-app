@@ -274,19 +274,11 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
                 () => _timePressed(true),
               ),
             ),
-            _state == ClockState.Playing
-                ? _timeBar(_controllerUp, true)
-                : SizedBox(
-                    height: 50,
-                  ),
+            _timeBar(_controllerUp, true),
             Container(
               height: 1,
             ),
-            _state == ClockState.Playing
-                ? _timeBar(_controllerDown, false)
-                : SizedBox(
-                    height: 50,
-                  ),
+            _timeBar(_controllerDown, false),
             Expanded(
               child: _button(
                 _controllerDown,
@@ -410,27 +402,24 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
               ),
               child: Container(
                 alignment: Alignment.center,
-                child: Container(
-                  width: 240,
-                  child: RotatedBox(
-                    quarterTurns: isUp ? 2 : 0,
-                    child: _controller.value == 0
-                        ? Icon(
-                            Icons.outlined_flag,
-                            size: 140,
-                            color: Color(0xFFededed),
-                          )
-                        : Text(
-                            timerString(_controller),
-                            style: TextStyle(
-                                fontSize: 80.0,
-                                fontWeight: FontWeight.normal,
-                                color: (_activeTop == true && isUp) ||
-                                        (_activeDown == true && !isUp)
-                                    ? Colors.white70
-                                    : Colors.black),
-                          ),
-                  ),
+                child: RotatedBox(
+                  quarterTurns: isUp ? 2 : 0,
+                  child: _controller.value == 0
+                      ? Icon(
+                          Icons.outlined_flag,
+                          size: 140,
+                          color: Color(0xFFededed),
+                        )
+                      : Text(
+                          timerString(_controller),
+                          style: TextStyle(
+                              fontSize: 80.0,
+                              fontWeight: FontWeight.normal,
+                              color: (_activeTop == true && isUp) ||
+                                      (_activeDown == true && !isUp)
+                                  ? Colors.white70
+                                  : Colors.black),
+                        ),
                 ),
               ),
             );
@@ -457,7 +446,7 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
                       width: _controller.value *
                           (MediaQuery.of(context).size.width - 20),
                       decoration: BoxDecoration(
-                        color: Colors.green.shade900,
+                        color: Color(0xFFdbdbdb),
                         borderRadius: top
                             ? BorderRadius.only(
                                 topLeft: Radius.circular(5),
