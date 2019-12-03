@@ -32,8 +32,8 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
   int increment;
   String clockMode;
 
-  bool _activeTop;
-  bool _activeDown;
+  bool _activeTop = false;
+  bool _activeDown = false;
 
   Color _activeColor;
   Color _inactiveColor;
@@ -160,13 +160,27 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
       });
     }
 
-    _toggleActiveButton(isUp);
-
-    if (isUp) {
+    if (_isTopActive(isUp)) {
       _toggleClock(_controllerUp, _controllerDown);
-    } else {
+    } else if (_isBottomActive(isUp)) {
       _toggleClock(_controllerDown, _controllerUp);
+    } else if (_activeTop != true && _activeDown != true) {
+      if (isUp) {
+        _toggleClock(_controllerUp, _controllerDown);
+      } else {
+        _toggleClock(_controllerDown, _controllerUp);
+      }
     }
+
+    _toggleActiveButton(isUp);
+  }
+
+  bool _isTopActive(bool isUp) {
+    return _activeTop == true && isUp;
+  }
+
+  bool _isBottomActive(bool isUp) {
+    return _activeDown == true && !isUp;
   }
 
   _toggleClock(AnimationController active, AnimationController passive) {
@@ -211,13 +225,15 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
       AnimationController active, AnimationController passive) {
     print('Bronstein delay started ' + _controllerDelay.value.toString());
 
-    active.duration = Duration(
-      milliseconds: (active.duration.inMilliseconds * active.value +
-              (increment * 1000 -
-                  _controllerDelay.duration.inMilliseconds *
-                      (_controllerDelay.value)))
-          .toInt(),
-    );
+    if (_activeDown == true || _activeDown == true) {
+      active.duration = Duration(
+        milliseconds: (active.duration.inMilliseconds * active.value +
+                (increment * 1000 -
+                    _controllerDelay.duration.inMilliseconds *
+                        (_controllerDelay.value)))
+            .toInt(),
+      );
+    }
 
     active.stop(canceled: true);
     active.value = 1;
@@ -229,11 +245,13 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
 
   _toggleIncrementClock(
       AnimationController active, AnimationController passive) {
-    active.duration = Duration(
-      milliseconds:
-          (active.duration.inMilliseconds * active.value + increment * 1000)
-              .toInt(),
-    );
+    if (_activeDown == true || _activeDown == true) {
+      active.duration = Duration(
+        milliseconds:
+            (active.duration.inMilliseconds * active.value + increment * 1000)
+                .toInt(),
+      );
+    }
 
     active.stop(canceled: true);
     active.value = 1;
