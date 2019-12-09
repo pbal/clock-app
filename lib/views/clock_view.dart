@@ -24,8 +24,9 @@ enum ClockState { Playing, Paused, Completed, Init }
 class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
   AnimationController _controllerUp;
   AnimationController _controllerDown;
-  AnimationController _controllerDelay;
-  AnimationStatusListener _listenerDelay;
+
+  Timer _delay;
+  Stopwatch _stopwatch = new Stopwatch();
 
   ClockState _state;
 
@@ -54,12 +55,6 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
 
     _controllerUp = _createController();
     _controllerDown = _createController();
-
-    _controllerDelay = AnimationController(
-      vsync: this,
-      duration: Duration(seconds: increment),
-      value: 1,
-    );
   }
 
   _createController() {
@@ -82,9 +77,9 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
   }
 
   _resetDelay() {
-    _controllerDelay.removeStatusListener(_listenerDelay);
-    _controllerDelay.value = 1;
-    _controllerDelay.stop(canceled: true);
+    _delay?.cancel();
+    _stopwatch.stop();
+    _stopwatch.reset();
   }
 
   _pauseClock() {
@@ -124,14 +119,14 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
 
     _controllerUp.stop(canceled: true);
     _controllerDown.stop(canceled: true);
-    _controllerDelay.stop(canceled: true);
+
+    _resetDelay();
+
     _controllerUp.value = 1;
     _controllerDown.value = 1;
 
     _controllerUp.duration = Duration(seconds: time.toInt());
     _controllerDown.duration = Duration(seconds: time.toInt());
-
-    _controllerDelay.value = 1;
 
     if (_state != ClockState.Init) {
       setState(() {
@@ -155,10 +150,13 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
     }
 
     if (_isTopActive(isUp)) {
+      print('top active');
       _toggleClock(_controllerUp, _controllerDown);
     } else if (_isBottomActive(isUp)) {
+      print('bottom active');
       _toggleClock(_controllerDown, _controllerUp);
     } else if (_activeTop != true && _activeDown != true) {
+      print('force start');
       if (isUp) {
         _toggleClock(_controllerUp, _controllerDown);
       } else {
@@ -193,47 +191,47 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
 
   _toggleSimpleDelayClock(
       AnimationController active, AnimationController passive) {
-    print('simple delay started ' + _controllerDelay.value.toString());
+    print('simple delay started ');
 
     active.stop(canceled: true);
     passive.stop(canceled: true);
-    _controllerDelay.value = 1;
 
-    _controllerDelay.removeStatusListener(_listenerDelay);
-
-    _listenerDelay = (state) {
-      if (state == AnimationStatus.dismissed) {
-        print("dismissed");
-        passive.reverse(from: passive.value);
-        _controllerDelay.removeStatusListener(_listenerDelay);
-      } else if (state == AnimationStatus.completed) {
-        print('completed delay prematurely');
-      }
-    };
-
-    _controllerDelay..addStatusListener(_listenerDelay);
-    _controllerDelay.reverse(from: _controllerDelay.value);
+    _delay?.cancel();
+    _delay = Timer.periodic(Duration(seconds: increment), (Timer timer) {
+      passive.reverse(from: passive.value);
+      timer.cancel();
+    });
   }
 
   _toggleBronsteinDelayClock(
       AnimationController active, AnimationController passive) {
-    print('Bronstein delay started ' + _controllerDelay.value.toString());
+    print('Bronstein delay started');
     if (_activeTop == true || _activeDown == true) {
       active.duration = Duration(
         milliseconds: (active.duration.inMilliseconds * active.value +
-                (increment * 1000 -
-                    _controllerDelay.duration.inMilliseconds *
-                        (_controllerDelay.value)))
+                (_stopwatch.isRunning
+                    ? _stopwatch.elapsedMilliseconds
+                    : increment * 1000))
             .toInt(),
       );
+      _stopwatch.reset();
+
+      print('stopwatch time ${_stopwatch.elapsedMilliseconds}');
     }
 
     active.stop(canceled: true);
     active.value = 1;
+    _stopwatch.start();
     passive.reverse(from: passive.value);
 
-    _controllerDelay.value = 1;
-    _controllerDelay.reverse(from: _controllerDelay.value);
+    _delay?.cancel();
+
+    _delay = Timer.periodic(Duration(seconds: increment), (Timer timer) {
+      timer.cancel();
+      print('stopwatch reset by timer');
+      _stopwatch.reset();
+      _stopwatch.stop();
+    });
   }
 
   _toggleIncrementClock(
@@ -296,12 +294,6 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
                 false,
                 () => _timePressed(false),
               ),
-            ),
-            AnimatedBuilder(
-              animation: _controllerDelay,
-              builder: (BuildContext context, Widget child) {
-                return SizedBox();
-              },
             ),
           ],
         ),
@@ -398,7 +390,7 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
       padding: EdgeInsets.all(10),
       child: InkWell(
         onTap: callback,
-        child: AnimatedBuilder(
+        child: new AnimatedBuilder(
           animation: _controller,
           builder: (BuildContext context, Widget child) {
             return Container(
@@ -414,7 +406,7 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
               child: Container(
                 alignment: Alignment.center,
                 child: RotatedBox(
-                  quarterTurns: isUp ? 2 : 0,
+                  quarterTurns: isUp ? 0 : 0,
                   child: _controller.value == 0
                       ? Icon(
                           Icons.outlined_flag,
@@ -481,7 +473,7 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
   void dispose() {
     _controllerUp.dispose();
     _controllerDown.dispose();
-    _controllerDelay.dispose();
+    _delay?.cancel();
     super.dispose();
   }
 }
