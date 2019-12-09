@@ -47,7 +47,7 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
     increment = widget.increment;
     clockMode = widget.clockMode;
 
-    _activeColor = Color(0xFF3c6f9c);
+    _activeColor = Color(0xFF4682b8);
     _inactiveColor = Colors.grey.shade500;
 
     _state = ClockState.Init;

@@ -9,7 +9,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Chess Clock',
       theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
+        primarySwatch: Colors.indigo,
         scaffoldBackgroundColor: Color(0xFF2b2b2b),
         inputDecorationTheme: InputDecorationTheme(
           labelStyle: TextStyle(

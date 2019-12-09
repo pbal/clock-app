@@ -27,9 +27,9 @@ class _PresetViewState extends State<PresetView> {
         width: 60.0,
         height: 60.0,
         child: RawMaterialButton(
-          fillColor: Colors.deepPurple,
+          fillColor: Theme.of(context).primaryColor,
           shape: CircleBorder(),
-          elevation: 0.0,
+          elevation: 5.0,
           child: Icon(
             Icons.add,
           ),
@@ -41,12 +41,12 @@ class _PresetViewState extends State<PresetView> {
           appBar: AppBar(
             title: Text(widget.title),
             actions: <Widget>[
-              RawMaterialButton(
-                child: Icon(
-                  Icons.settings,
-                ),
-                onPressed: () => {},
-              ),
+              // RawMaterialButton(
+              //   child: Icon(
+              //     Icons.settings,
+              //   ),
+              //   onPressed: () => {},
+              // ),
             ],
           ),
           body: Container(
