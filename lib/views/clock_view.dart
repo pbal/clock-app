@@ -245,7 +245,7 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
 
   _toggleIncrementClock(
       AnimationController active, AnimationController passive) {
-    if (_activeDown == true || _activeDown == true) {
+    if (_activeTop == true || _activeDown == true) {
       active.duration = Duration(
         milliseconds:
             (active.duration.inMilliseconds * active.value + increment * 1000)
