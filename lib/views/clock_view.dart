@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:screen/screen.dart';
+import 'dart:async';
 
 class ClockView extends StatefulWidget {
   ClockView({
@@ -51,7 +52,8 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
 
     _state = ClockState.Init;
 
-    _createController();
+    _controllerUp = _createController();
+    _controllerDown = _createController();
 
     _controllerDelay = AnimationController(
       vsync: this,
@@ -61,25 +63,17 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
   }
 
   _createController() {
-    _controllerUp = AnimationController(
+    AnimationController controller;
+    controller = new AnimationController(
       vsync: this,
       duration: Duration(seconds: time.toInt()),
       value: 1,
     )..addStatusListener((status) {
-        if (_controllerUp.status == AnimationStatus.dismissed) {
+        if (controller.status == AnimationStatus.dismissed) {
           _completeClock();
         }
       });
-
-    _controllerDown = AnimationController(
-      vsync: this,
-      duration: Duration(seconds: time.toInt()),
-      value: 1,
-    )..addStatusListener((status) {
-        if (_controllerDown.status == AnimationStatus.dismissed) {
-          _completeClock();
-        }
-      });
+    return controller;
   }
 
   String timerString(AnimationController _controller) {
@@ -224,8 +218,7 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
   _toggleBronsteinDelayClock(
       AnimationController active, AnimationController passive) {
     print('Bronstein delay started ' + _controllerDelay.value.toString());
-
-    if (_activeDown == true || _activeDown == true) {
+    if (_activeTop == true || _activeDown == true) {
       active.duration = Duration(
         milliseconds: (active.duration.inMilliseconds * active.value +
                 (increment * 1000 -
