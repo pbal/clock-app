@@ -1,13 +1,11 @@
-import 'package:flutter/services.dart';
 import 'package:clock/views/clock_view.dart';
 import 'package:clock/model/clock.dart';
 import 'package:clock/widgets/custom_widget.dart';
 import 'package:flutter/material.dart';
 
 class PresetView extends StatefulWidget {
-  PresetView({Key key, this.title}) : super(key: key);
-
-  final String title;
+  final String? title ;
+  PresetView({Key? key, this.title}) : super(key: key);
 
   @override
   _PresetViewState createState() => _PresetViewState();
@@ -21,7 +19,6 @@ class _PresetViewState extends State<PresetView> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     return Scaffold(
       floatingActionButton: Container(
         width: 60.0,
@@ -39,14 +36,8 @@ class _PresetViewState extends State<PresetView> {
       body: Container(
         child: Scaffold(
           appBar: AppBar(
-            title: Text(widget.title),
+            title: Text(widget.title ?? ""),
             actions: <Widget>[
-              // RawMaterialButton(
-              //   child: Icon(
-              //     Icons.settings,
-              //   ),
-              //   onPressed: () => {},
-              // ),
             ],
           ),
           body: Container(
@@ -62,7 +53,7 @@ class _PresetViewState extends State<PresetView> {
                 return ListTile(
                   title: Text(
                     item.type,
-                    style: Theme.of(context).textTheme.title,
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
                   subtitle: _getSubtitle(item),
                   onTap: () => _onListItemClick(item),
@@ -93,7 +84,7 @@ class _PresetViewState extends State<PresetView> {
 
     return Text(
       text,
-      style: Theme.of(context).textTheme.subtitle,
+      style: Theme.of(context).textTheme.titleSmall,
     );
   }
 

@@ -19,8 +19,8 @@ class MyApp extends StatelessWidget {
         ),
         iconTheme: IconThemeData(color: Colors.white),
         textTheme: TextTheme(
-          title: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
-          subtitle: TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
+          titleMedium: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
+          titleSmall: TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
         ),
       ),
       debugShowCheckedModeBanner: false,

@@ -1,11 +1,9 @@
-import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
-import 'package:screen/screen.dart';
-import 'dart:async';
+import 'package:keep_screen_on/keep_screen_on.dart';
 
 class ClockView extends StatefulWidget {
   ClockView({
-    Key key,
+    Key? key,
     this.time = 90,
     this.increment = 0,
     this.clockMode = 'Sudden Death',
@@ -22,22 +20,22 @@ class ClockView extends StatefulWidget {
 enum ClockState { Playing, Paused, Completed, Init }
 
 class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
-  AnimationController _controllerUp;
-  AnimationController _controllerDown;
-  AnimationController _controllerDelay;
-  AnimationStatusListener _listenerDelay;
+  late AnimationController _controllerUp;
+  late AnimationController _controllerDown;
+  late AnimationController _controllerDelay;
+  AnimationStatusListener _listenerDelay = (state) {};
 
-  ClockState _state;
+  late ClockState _state;
 
-  int time;
-  int increment;
-  String clockMode;
+  late int time;
+  late int increment;
+  late String clockMode;
 
   bool _activeTop = false;
   bool _activeDown = false;
 
-  Color _activeColor;
-  Color _inactiveColor;
+  late Color _activeColor;
+  late Color _inactiveColor;
 
   @override
   void initState() {
@@ -63,7 +61,7 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
   }
 
   _createController() {
-    AnimationController controller;
+    late AnimationController controller;
     controller = new AnimationController(
       vsync: this,
       duration: Duration(seconds: time.toInt()),
@@ -77,11 +75,13 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
   }
 
   String timerString(AnimationController _controller) {
-    Duration duration = _controller.duration * _controller.value;
+    Duration duration =
+        (_controller.duration ?? Duration.zero) * _controller.value;
     return '${duration.inMinutes}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}.${(duration.inMilliseconds % 1000).toString().substring(0, 1)}';
   }
 
   _resetDelay() {
+    print('_listenerDelay');
     _controllerDelay.removeStatusListener(_listenerDelay);
     _controllerDelay.value = 1;
     _controllerDelay.stop(canceled: true);
@@ -220,9 +220,9 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
     print('Bronstein delay started ' + _controllerDelay.value.toString());
     if (_activeTop == true || _activeDown == true) {
       active.duration = Duration(
-        milliseconds: (active.duration.inMilliseconds * active.value +
+        milliseconds: ((active.duration?.inMilliseconds ?? 0) * active.value +
                 (increment * 1000 -
-                    _controllerDelay.duration.inMilliseconds *
+                    (_controllerDelay.duration?.inMilliseconds ?? 0) *
                         (_controllerDelay.value)))
             .toInt(),
       );
@@ -240,9 +240,9 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
       AnimationController active, AnimationController passive) {
     if (_activeTop == true || _activeDown == true) {
       active.duration = Duration(
-        milliseconds:
-            (active.duration.inMilliseconds * active.value + increment * 1000)
-                .toInt(),
+        milliseconds: ((active.duration?.inMilliseconds ?? 0) * active.value +
+                increment * 1000)
+            .toInt(),
       );
     }
 
@@ -268,11 +268,10 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
       topRight: Radius.circular(radius),
     );
   }
-
+ 
   @override
   Widget build(BuildContext context) {
-    Screen.keepOn(true);
-    SystemChrome.setEnabledSystemUIOverlays([]);
+    KeepScreenOn.turnOn();
     return Scaffold(
       body: Center(
         child: Column(
@@ -299,7 +298,7 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
             ),
             AnimatedBuilder(
               animation: _controllerDelay,
-              builder: (BuildContext context, Widget child) {
+              builder: (BuildContext context, Widget? child) {
                 return SizedBox();
               },
             ),
@@ -397,10 +396,10 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
     return Padding(
       padding: EdgeInsets.all(10),
       child: InkWell(
-        onTap: callback,
+        onTap: () => callback(),
         child: AnimatedBuilder(
           animation: _controller,
-          builder: (BuildContext context, Widget child) {
+          builder: (BuildContext context, Widget? child) {
             return Container(
               decoration: BoxDecoration(
                 color: _controller.value == 0
@@ -451,7 +450,7 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
         children: <Widget>[
           AnimatedBuilder(
             animation: _controller,
-            builder: (BuildContext context, Widget child) {
+            builder: (BuildContext context, Widget? child) {
               return ClockState.Completed != _state
                   ? Container(
                       width: _controller.value *
@@ -479,6 +478,7 @@ class _ClockViewState extends State<ClockView> with TickerProviderStateMixin {
 
   @override
   void dispose() {
+    KeepScreenOn.turnOff();
     _controllerUp.dispose();
     _controllerDown.dispose();
     _controllerDelay.dispose();

@@ -5,22 +5,22 @@ class Clock {
   int increment;
   int delay;
 
-  Clock({this.type, this.seconds, this.increment, this.delay});
+  Clock(this.type, this.seconds, this.increment, this.delay);
 
   static get presets {
     return [
-      Clock(type: 'Ultra Bullet', seconds: 15, delay: 0, increment: 0),
-      Clock(type: 'Hyper Bullet', seconds: 30, delay: 0, increment: 0),
-      Clock(type: 'Bullet', seconds: 60, delay: 0, increment: 0),
-      Clock(type: 'Bullet', seconds: 120, delay: 0, increment: 1),
-      Clock(type: 'Blitz', seconds: 180, delay: 0, increment: 0),
-      Clock(type: 'Blitz', seconds: 180, delay: 0, increment: 2),
-      Clock(type: 'Blitz', seconds: 300, delay: 0, increment: 0),
-      Clock(type: 'Blitz', seconds: 300, delay: 0, increment: 5),
-      Clock(type: 'Rapid', seconds: 600, delay: 0, increment: 0),
-      Clock(type: 'Rapid', seconds: 600, delay: 0, increment: 10),
-      Clock(type: 'Classical', seconds: 900, delay: 0, increment: 0),
-      Clock(type: 'Classical', seconds: 900, delay: 0, increment: 15),
+      Clock('Ultra Bullet', 15, 0, 0),
+      Clock('Hyper Bullet', 30, 0, 0),
+      Clock('Bullet', 60, 0, 0),
+      Clock('Bullet', 120, 0, 1),
+      Clock('Blitz', 180, 0, 0),
+      Clock('Blitz', 180, 0, 2),
+      Clock('Blitz', 300, 0, 0),
+      Clock('Blitz', 300, 0, 5),
+      Clock('Rapid', 600, 0, 0),
+      Clock('Rapid', 600, 0, 10),
+      Clock('Classical', 900, 0, 0),
+      Clock('Classical', 900, 0, 15),
     ];
   }
 }

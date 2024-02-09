@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:clock/model/mode.dart';
 
 class CustomClock extends StatefulWidget {
-  CustomClock({Key key}) : super(key: key);
+  CustomClock({Key? key}) : super(key: key);
 
   @override
   _CustomClockState createState() => _CustomClockState();
@@ -18,8 +18,8 @@ class _CustomClockState extends State<CustomClock> {
   int bronsDelay = 0;
 
   _onSave() {
-    if (_formKey.currentState.validate()) {
-      _formKey.currentState.save();
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
 
       Navigator.push(
         context,
@@ -50,8 +50,8 @@ class _CustomClockState extends State<CustomClock> {
                 ),
                 child: DropdownButton<String>(
                   value: clockMode,
-                  onChanged: (String value) {
-                    setState(() => clockMode = value);
+                  onChanged: (String? value) {
+                    setState(() => clockMode = value ?? "");
                   },
                   items: ClockMode.modes
                       .map<DropdownMenuItem<String>>((String value) {
@@ -69,8 +69,8 @@ class _CustomClockState extends State<CustomClock> {
                 ),
                 child: DropdownButton<int>(
                   value: time,
-                  onChanged: (int value) {
-                    setState(() => time = value);
+                  onChanged: (int? value) {
+                    setState(() => time = value ?? 0);
                   },
                   items: ClockMode.timeSeconds
                       .map<DropdownMenuItem<int>>((int value) {
@@ -93,8 +93,8 @@ class _CustomClockState extends State<CustomClock> {
                       ),
                       child: DropdownButton<int>(
                         value: increment,
-                        onChanged: (int value) {
-                          setState(() => increment = value);
+                        onChanged: (int? value) {
+                          setState(() => increment = value ?? 0);
                         },
                         items: ClockMode.increment
                             .map<DropdownMenuItem<int>>((int value) {
@@ -107,7 +107,7 @@ class _CustomClockState extends State<CustomClock> {
                     )
                   : SizedBox(),
               SizedBox(height: 10),
-              RaisedButton(
+              ElevatedButton(
                 child: Text("Set Clock"),
                 onPressed: _onSave,
               ),
